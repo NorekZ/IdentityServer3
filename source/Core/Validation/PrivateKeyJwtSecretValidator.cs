@@ -22,10 +22,13 @@ using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using SecurityKey = Microsoft.IdentityModel.Tokens.SecurityKey;
+using SecurityToken = Microsoft.IdentityModel.Tokens.SecurityToken;
 
 namespace IdentityServer3.Core.Validation
 {

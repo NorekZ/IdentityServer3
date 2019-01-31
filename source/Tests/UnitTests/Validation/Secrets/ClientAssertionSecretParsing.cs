@@ -20,6 +20,7 @@ using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Validation;
 using Microsoft.Owin;
 using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Text;
 using Xunit;

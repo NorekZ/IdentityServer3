@@ -24,10 +24,11 @@ using IdentityServer3.Core.Services.InMemory;
 using IdentityServer3.Core.Validation;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 using Xunit;
 
 namespace IdentityServer3.Tests.Validation.Secrets
@@ -64,9 +65,7 @@ namespace IdentityServer3.Tests.Validation.Secrets
                     },
                     now,
                     now.AddMinutes(1),
-                    new X509SigningCredentials(certificate,
-                                               SecurityAlgorithms.RsaSha256Signature,
-                                               SecurityAlgorithms.Sha256Digest)
+                    new X509SigningCredentials(certificate)
                 );
             var rawCertificate = Convert.ToBase64String(certificate.Export(X509ContentType.Cert));
             token.Header.Add(JwtHeaderParameterNames.X5c, new[] { rawCertificate });

@@ -25,12 +25,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IdentityModel.Selectors;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel.Security;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using SecurityToken = System.IdentityModel.Tokens.SecurityToken;
 
 #pragma warning disable 1591
 
@@ -229,12 +231,13 @@ namespace IdentityServer3.Core.Validation
         {
             var handler = new JwtSecurityTokenHandler
             {
-                Configuration =
-                    new SecurityTokenHandlerConfiguration
-                    {
-                        CertificateValidationMode = X509CertificateValidationMode.None,
-                        CertificateValidator = X509CertificateValidator.None
-                    }
+                // TODO
+                //Configuration =
+                //    new SecurityTokenHandlerConfiguration
+                //    {
+                //        CertificateValidationMode = X509CertificateValidationMode.None,
+                //        CertificateValidator = X509CertificateValidator.None
+                //    }
             };
 
             var keys = (from c in signingCertificates select new X509SecurityKey(c)).ToList();
@@ -249,7 +252,7 @@ namespace IdentityServer3.Core.Validation
 
             try
             {
-                SecurityToken jwtToken;
+                Microsoft.IdentityModel.Tokens.SecurityToken jwtToken;
                 var id = handler.ValidateToken(jwt, parameters, out jwtToken);
 
                 // if access token contains an ID, log it

@@ -51,14 +51,12 @@ namespace IdentityServer3.Tests.Endpoints
 
         public static IEnumerable<CookieState> GetCookies(this HttpResponseMessage resp)
         {
-            IEnumerable<string> values;
-            if (resp.Headers.TryGetValues("Set-Cookie", out values))
+            if (resp.Headers.TryGetValues("Set-Cookie", out var values))
             {
                 var cookies = new List<CookieState>();
                 foreach (var value in values)
                 {
-                    CookieHeaderValue cookie;
-                    if (CookieHeaderValue.TryParse(value, out cookie))
+                    if (CookieHeaderValue.TryParse(value, out var cookie) && (cookie.Expires == null || cookie.Expires > DateTime.Now))
                     {
                         cookies.AddRange(cookie.Cookies);
                     }
@@ -70,8 +68,7 @@ namespace IdentityServer3.Tests.Endpoints
 
         public static IEnumerable<string> GetRawCookies(this HttpResponseMessage resp)
         {
-            IEnumerable<string> values;
-            if (resp.Headers.TryGetValues("Set-Cookie", out values))
+            if (resp.Headers.TryGetValues("Set-Cookie", out var values))
             {
                 return values;
             }
@@ -140,8 +137,7 @@ namespace IdentityServer3.Tests.Endpoints
                 .Select(s => s.Trim())
                 .ToDictionary(s => s.Split('=').First(), s => s.Split('=').Last());
 
-            DateTime expiry;
-            if (DateTime.TryParse(parts["expires"], out expiry))
+            if (DateTime.TryParse(parts["expires"], out var expiry))
             {
                 return parts.First().Value == "." && expiry < DateTimeHelper.UtcNow;
             }

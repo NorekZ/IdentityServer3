@@ -16,6 +16,10 @@
 
 using IdentityServer3.Core.Extensions;
 using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using SecurityKey = System.IdentityModel.Tokens.SecurityKey;
+using SecurityToken = System.IdentityModel.Tokens.SecurityToken;
 
 namespace IdentityServer3.Core.Validation
 {
@@ -29,14 +33,14 @@ namespace IdentityServer3.Core.Validation
     /// </remarks>
     internal class EmbeddedCertificateJwtSecurityTokenHandler : JwtSecurityTokenHandler
     {
-        protected override SecurityKey ResolveIssuerSigningKey(string token, SecurityToken securityToken, SecurityKeyIdentifier keyIdentifier, TokenValidationParameters validationParameters)
+        protected override Microsoft.IdentityModel.Tokens.SecurityKey ResolveIssuerSigningKey(string token, JwtSecurityToken securityToken, TokenValidationParameters validationParameters)
         {
-            var certificate = ((JwtSecurityToken)securityToken).GetCertificateFromToken();
+            var certificate = securityToken.GetCertificateFromToken();
             if (certificate != null)
             {
-                keyIdentifier.Add(new X509RawDataKeyIdentifierClause(certificate));
+                // TODO validationParameters..Add(new X509RawDataKeyIdentifierClause(certificate));
             }
-            return base.ResolveIssuerSigningKey(token, securityToken, keyIdentifier, validationParameters);
+            return base.ResolveIssuerSigningKey(token, securityToken, validationParameters);
         }
     }
 }

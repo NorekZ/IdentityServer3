@@ -16,8 +16,10 @@
 
 using System;
 using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Newtonsoft.Json.Linq;
 
 namespace IdentityServer3.Core.Extensions
 {
@@ -28,11 +30,15 @@ namespace IdentityServer3.Core.Extensions
             object values;
             if (securityToken.Header.TryGetValue(JwtHeaderParameterNames.X5c, out values))
             {
-                var objects = values as object[];
-                var rawCertificate = objects != null ? objects.Cast<string>().FirstOrDefault() : null;
-                if (rawCertificate != null)
+                var jArray = values as JArray;
+                if (jArray != null)
                 {
-                    return new X509Certificate2(Convert.FromBase64String(rawCertificate));
+                    var objects = jArray.ToList<object>();
+                    var rawCertificate = objects.Select(o => o.ToString()).FirstOrDefault();
+                    if (rawCertificate != null)
+                    {
+                        return new X509Certificate2(Convert.FromBase64String(rawCertificate));
+                    }
                 }
             }
             return null;

@@ -16,8 +16,9 @@
 
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer3.Core.Services.Default
 {
@@ -112,7 +113,7 @@ namespace IdentityServer3.Core.Services.Default
             var x509credential = credential as X509SigningCredentials;
             if (x509credential != null)
             {
-                header.Add("kid", await _keyService.GetKidAsync(x509credential.Certificate));
+                header["kid"] = await _keyService.GetKidAsync(x509credential.Certificate);
             }
 
             return header;
