@@ -102,6 +102,14 @@ namespace IdentityServer3.Core.Configuration
         public CookieSecureMode SecureMode { get; set; }
 
         /// <summary>
+        /// Gets or sets the mode for issuing the same site flag on the cookies issued. Defaults to null (unspecified).
+        /// </summary>
+        /// <value>
+        /// The same site mode.
+        /// </value>
+        public CookieSameSiteMode? SameSiteMode { get; set; }
+
+        /// <summary>
         /// An optional container in which to store the identity across requests. When used, only a session identifier is sent
         /// to the client. This can be used to mitigate potential problems with very large identities.
         /// </summary>

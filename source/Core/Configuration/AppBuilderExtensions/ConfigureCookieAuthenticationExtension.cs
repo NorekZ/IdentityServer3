@@ -25,6 +25,8 @@ using Microsoft.Owin.Security.DataHandler;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Owin;
+using CookieOptions = IdentityServer3.Core.Configuration.CookieOptions;
 
 namespace Owin
 {
@@ -47,6 +49,7 @@ namespace Owin
                 ExpireTimeSpan = options.ExpireTimeSpan,
                 SlidingExpiration = options.SlidingExpiration,
                 CookieSecure = GetCookieSecure(options.SecureMode),
+                CookieSameSite = GetCookieSameSite(options.SameSiteMode),
                 TicketDataFormat = new TicketDataFormat(new DataProtectorAdapter(dataProtector, options.Prefix + Constants.PrimaryAuthenticationType)),
                 SessionStore = GetSessionStore(options.SessionStoreProvider),
                 Provider = new CookieAuthenticationProvider
@@ -72,6 +75,7 @@ namespace Owin
                 ExpireTimeSpan = Constants.ExternalCookieTimeSpan,
                 SlidingExpiration = false,
                 CookieSecure = GetCookieSecure(options.SecureMode),
+                CookieSameSite = GetCookieSameSite(options.SameSiteMode),
                 TicketDataFormat = new TicketDataFormat(new DataProtectorAdapter(dataProtector, options.Prefix + Constants.ExternalAuthenticationType))
             };
             app.UseCookieAuthentication(external);
@@ -84,6 +88,7 @@ namespace Owin
                 ExpireTimeSpan = options.ExpireTimeSpan,
                 SlidingExpiration = options.SlidingExpiration,
                 CookieSecure = GetCookieSecure(options.SecureMode),
+                CookieSameSite = GetCookieSameSite(options.SameSiteMode),
                 TicketDataFormat = new TicketDataFormat(new DataProtectorAdapter(dataProtector, options.Prefix + Constants.PartialSignInAuthenticationType))
             };
             app.UseCookieAuthentication(partial);
@@ -130,6 +135,23 @@ namespace Owin
                     return CookieSecureOption.SameAsRequest;
                 default:
                     throw new InvalidOperationException("Invalid CookieSecureMode");
+            }
+        }
+
+        private static SameSiteMode? GetCookieSameSite(CookieSameSiteMode? cookieSameSiteMode)
+        {
+            switch (cookieSameSiteMode)
+            {
+                case CookieSameSiteMode.None:
+                    return SameSiteMode.None;
+                case CookieSameSiteMode.Lax:
+                    return SameSiteMode.Lax;
+                case CookieSameSiteMode.Strict:
+                    return SameSiteMode.Strict;
+                case null:
+                    return null;
+                default:
+                    throw new InvalidOperationException("Invalid CookieSameSiteMode");
             }
         }
 

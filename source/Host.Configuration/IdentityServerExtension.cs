@@ -28,6 +28,7 @@ using Microsoft.Owin.Security.Twitter;
 using Microsoft.Owin.Security.WsFederation;
 using System;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Protocols.WsFederation;
 
 namespace Owin
 {
@@ -127,7 +128,7 @@ namespace Owin
 
             // workaround for https://katanaproject.codeplex.com/workitem/409
             var metadataAddress = "https://adfs.leastprivilege.vm/federationmetadata/2007-06/federationmetadata.xml";
-            var manager = new SyncConfigurationManager(new ConfigurationManager<WsFederationConfiguration>(metadataAddress));
+            var manager = new SyncConfigurationManager(new ConfigurationManager<WsFederationConfiguration>(metadataAddress, new WsFederationConfigurationRetriever(), new HttpDocumentRetriever { RequireHttps = false }));
 
             var adfs = new WsFederationAuthenticationOptions
             {
